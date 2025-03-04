@@ -14,7 +14,7 @@ build-arm64:
 #########################
 .PHONY: run
 run:
-	go run cmd/raybot/main.go config.yml
+	go run cmd/raybot/main.go raybot-config.yml
 
 #########################
 # Testing
