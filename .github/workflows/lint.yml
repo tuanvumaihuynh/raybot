@@ -26,7 +26,7 @@ jobs:
           go-version: "1.23.x"
           cache: false
 
-      - name: Install golangci-lint
-        uses: golangci/install-action@v2
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v6
         with:
           version: 1.62.2
