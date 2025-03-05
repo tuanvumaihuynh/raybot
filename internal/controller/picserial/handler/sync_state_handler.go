@@ -75,14 +75,14 @@ func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 	switch msg.StateType {
 	case syncStateTypeBattery:
 		var temp struct {
-			Current      uint   `json:"current"`
-			Temp         uint   `json:"temp"`
-			Voltage      uint   `json:"voltage"`
-			CellVoltages []uint `json:"cell_voltages"`
-			Percent      uint8  `json:"percent"`
-			Fault        uint8  `json:"fault"`
-			Health       uint8  `json:"health"`
-			Status       uint8  `json:"status"`
+			Current      uint16   `json:"current"`
+			Temp         uint8    `json:"temp"`
+			Voltage      uint16   `json:"voltage"`
+			CellVoltages []uint16 `json:"cell_voltages"`
+			Percent      uint8    `json:"percent"`
+			Fault        uint8    `json:"fault"`
+			Health       uint8    `json:"health"`
+			Status       uint8    `json:"status"`
 		}
 		if err := json.Unmarshal(msg.Data, &temp); err != nil {
 			h.log.Error("failed to unmarshal battery data", "error", err)
@@ -103,8 +103,8 @@ func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 
 	case syncStateTypeCharge:
 		var temp struct {
-			CurrentLimit uint  `json:"current_limit"`
-			Enabled      uint8 `json:"enabled"`
+			CurrentLimit uint16 `json:"current_limit"`
+			Enabled      uint8  `json:"enabled"`
 		}
 		if err := json.Unmarshal(msg.Data, &temp); err != nil {
 			h.log.Error("failed to unmarshal charge data", "error", err)
@@ -119,8 +119,8 @@ func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 
 	case syncStateTypeDischarge:
 		var temp struct {
-			CurrentLimit uint  `json:"current_limit"`
-			Enabled      uint8 `json:"enabled"`
+			CurrentLimit uint16 `json:"current_limit"`
+			Enabled      uint8  `json:"enabled"`
 		}
 		if err := json.Unmarshal(msg.Data, &temp); err != nil {
 			h.log.Error("failed to unmarshal discharge data", "error", err)
@@ -135,9 +135,9 @@ func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 
 	case syncStateTypeDistanceSensor:
 		var temp struct {
-			FrontDistance uint `json:"front_distance"`
-			BackDistance  uint `json:"back_distance"`
-			DownDistance  uint `json:"down_distance"`
+			FrontDistance uint16 `json:"front_distance"`
+			BackDistance  uint16 `json:"back_distance"`
+			DownDistance  uint16 `json:"down_distance"`
 		}
 		if err := json.Unmarshal(msg.Data, &temp); err != nil {
 			h.log.Error("failed to unmarshal distance sensor data", "error", err)
@@ -153,8 +153,10 @@ func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 
 	case syncStateTypeLiftMotor:
 		var temp struct {
-			Direction model.LiftMotorDirection `json:"direction"`
-			Speed     uint8                    `json:"speed"`
+			CurrentPosition uint16 `json:"current_position"`
+			TargetPosition  uint16 `json:"target_position"`
+			IsRunning       uint8  `json:"is_running"`
+			Enabled         uint8  `json:"enabled"`
 		}
 		if err := json.Unmarshal(msg.Data, &temp); err != nil {
 			h.log.Error("failed to unmarshal lift motor data", "error", err)
@@ -163,14 +165,18 @@ func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 
 		params.SetLiftMotor = true
 		params.LiftMotor = service.LiftMotorParams{
-			Direction: temp.Direction,
-			Speed:     temp.Speed,
+			CurrentPosition: temp.CurrentPosition,
+			TargetPosition:  temp.TargetPosition,
+			IsRunning:       temp.IsRunning == 1,
+			Enabled:         temp.Enabled == 1,
 		}
 
 	case syncStateTypeDriveMotor:
 		var temp struct {
 			Direction model.DriveMotorDirection `json:"direction"`
 			Speed     uint8                     `json:"speed"`
+			IsRunning uint8                     `json:"is_running"`
+			Enabled   uint8                     `json:"enabled"`
 		}
 		if err := json.Unmarshal(msg.Data, &temp); err != nil {
 			h.log.Error("failed to unmarshal drive motor data", "error", err)
@@ -181,6 +187,8 @@ func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 		params.DriveMotor = service.DriveMotorParams{
 			Direction: temp.Direction,
 			Speed:     temp.Speed,
+			IsRunning: temp.IsRunning == 1,
+			Enabled:   temp.Enabled == 1,
 		}
 
 	default:

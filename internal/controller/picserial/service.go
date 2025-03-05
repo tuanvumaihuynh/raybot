@@ -19,7 +19,7 @@ type Config struct {
 
 // RegisterFlags registers flags for the PIC configuration.
 func (cfg *Config) RegisterFlags(f *flag.FlagSet) {
-	cfg.Serial.RegisterFlagsWithPrefix("pic.", f)
+	cfg.Serial.RegisterFlagsWithPrefix("pic-", f)
 }
 
 // Validate validates the PIC configuration.
@@ -36,7 +36,6 @@ type PICSerialService struct {
 	cfg Config
 
 	serialClient serial.Client
-	robotService service.RobotService
 
 	handlers Handlers
 	log      *slog.Logger
@@ -57,21 +56,25 @@ func NewPICSerialService(cfg Config, service service.Service) (*PICSerialService
 	return &PICSerialService{
 		cfg:          cfg,
 		serialClient: serialClient,
-		robotService: service.RobotService(),
 		handlers:     handlers,
-		log: slog.With(
-			slog.String("module", "pic"),
-			slog.String("service", "PICSerialService"),
-		),
+		log:          slog.With(slog.String("service", "PICSerialService")),
 	}, nil
 }
 
 // Run runs the PIC serial service.
 func (s *PICSerialService) Run(ctx context.Context) (CleanupFunc, error) {
+	s.log.Debug("PIC serial service is running")
+
 	go s.readLoop(ctx)
 
 	cleanup := func(_ context.Context) error {
-		return s.serialClient.Stop()
+		s.log.Debug("PIC serial service is shutting down")
+		if err := s.serialClient.Stop(); err != nil {
+			s.log.Error("failed to stop serial client", "error", err)
+			return err
+		}
+		s.log.Debug("PIC serial service shut down complete")
+		return nil
 	}
 
 	return cleanup, nil
