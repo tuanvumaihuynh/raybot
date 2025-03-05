@@ -115,10 +115,12 @@ Ví dụ phản hồi:
 |-------|-----------|----------|-------------|
 | CurrentPosition | uint16 | current_position | Vị trí hiện tại của động cơ nâng (cm) |
 | TargetPosition | uint16 | target_position | Vị trí mục tiêu của động cơ nâng (cm) |
+| IsRunning | uint8 | is_running | Động cơ có đang chạy hay không (0=false/1=true) |
+| Enabled | uint8 | enabled | Cho phép động cơ nâng hoạt động hay không (0=false/1=true) |
 
 Ví dụ phản hồi:
 ```
->{"type":0,"state_type":"4","data":{"current_position":100,"target_position":200}}\r\n
+>{"type":0,"state_type":"4","data":{"current_position":100,"target_position":200,"is_running":1,"enabled":1}}\r\n
 ```
 
 ### 2.6. Trạng thái động cơ di chuyển
@@ -128,8 +130,10 @@ Ví dụ phản hồi:
 |-------|-----------|----------|-------------|
 | Direction | uint8 | direction | Hướng của động cơ di chuyển (0=Tiến/1=Lùi) |
 | Speed | uint8 | speed | Tốc độ của động cơ di chuyển tính bằng % |
+| IsRunning | uint8 | is_running | Động cơ có đang chạy hay không (0=false/1=true) |
+| Enabled | uint8 | enabled | Cho phép động cơ di chuyển hoạt động hay không (0=false/1=true) |
 
 Ví dụ phản hồi:
 ```
->{"type":0,"state_type":"5","data":{"direction":0,"speed":50}}\r\n
+>{"type":0,"state_type":"5","data":{"direction":0,"speed":50,"is_running":1,"enabled":1}}\r\n
 ```
