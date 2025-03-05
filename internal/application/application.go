@@ -10,6 +10,7 @@ import (
 
 	"gopkg.in/yaml.v3"
 
+	"github.com/tbe-team/raybot/internal/controller/grpc"
 	"github.com/tbe-team/raybot/internal/controller/picserial"
 	"github.com/tbe-team/raybot/internal/repository/repoimpl"
 	"github.com/tbe-team/raybot/internal/service"
@@ -19,13 +20,15 @@ import (
 )
 
 type Config struct {
-	PIC picserial.Config `yaml:"pic"`
-	Log log.Config       `yaml:"log"`
+	PIC  picserial.Config `yaml:"pic"`
+	GRPC grpc.Config      `yaml:"grpc"`
+	Log  log.Config       `yaml:"log"`
 }
 
 // RegisterFlags registers flags for the application.
 func (cfg *Config) RegisterFlags(f *flag.FlagSet) {
 	cfg.PIC.RegisterFlags(f)
+	cfg.GRPC.RegisterFlags(f)
 	cfg.Log.RegisterFlags(f)
 }
 
@@ -33,6 +36,10 @@ func (cfg *Config) RegisterFlags(f *flag.FlagSet) {
 func (cfg *Config) Validate() error {
 	if err := cfg.PIC.Validate(); err != nil {
 		return fmt.Errorf("validate PIC: %w", err)
+	}
+
+	if err := cfg.GRPC.Validate(); err != nil {
+		return fmt.Errorf("validate GRPC: %w", err)
 	}
 
 	if err := cfg.Log.Validate(); err != nil {
