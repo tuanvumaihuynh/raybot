@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/tbe-team/raybot/cmd/raybot/grpc"
 	"github.com/tbe-team/raybot/cmd/raybot/pic"
 	"github.com/tbe-team/raybot/internal/application"
 	"github.com/tbe-team/raybot/pkg/cmdutil"
@@ -33,6 +34,13 @@ func main() {
 	go func() {
 		if err := pic.Start(app); err != nil {
 			log.Printf("failed to start PIC serial service: %v\n", err)
+			os.Exit(1)
+		}
+	}()
+
+	go func() {
+		if err := grpc.Start(app); err != nil {
+			log.Printf("failed to start GRPC service: %v\n", err)
 			os.Exit(1)
 		}
 	}()
