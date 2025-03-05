@@ -70,7 +70,6 @@ func NewSyncStateHandler(robotService service.RobotService) *SyncStateHandler {
 }
 
 func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
-	h.log.Debug("received sync state message", slog.Any("msg", msg))
 	params := service.UpdateRobotStateParams{}
 	switch msg.StateType {
 	case syncStateTypeBattery:
@@ -85,7 +84,7 @@ func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 			Status       uint8    `json:"status"`
 		}
 		if err := json.Unmarshal(msg.Data, &temp); err != nil {
-			h.log.Error("failed to unmarshal battery data", "error", err)
+			h.log.Error("failed to unmarshal battery data", slog.Any("error", err), slog.Any("data", msg.Data))
 			return
 		}
 
@@ -107,7 +106,7 @@ func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 			Enabled      uint8  `json:"enabled"`
 		}
 		if err := json.Unmarshal(msg.Data, &temp); err != nil {
-			h.log.Error("failed to unmarshal charge data", "error", err)
+			h.log.Error("failed to unmarshal charge data", slog.Any("error", err), slog.Any("data", msg.Data))
 			return
 		}
 
@@ -123,7 +122,7 @@ func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 			Enabled      uint8  `json:"enabled"`
 		}
 		if err := json.Unmarshal(msg.Data, &temp); err != nil {
-			h.log.Error("failed to unmarshal discharge data", "error", err)
+			h.log.Error("failed to unmarshal discharge data", slog.Any("error", err), slog.Any("data", msg.Data))
 			return
 		}
 
@@ -140,7 +139,7 @@ func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 			DownDistance  uint16 `json:"down_distance"`
 		}
 		if err := json.Unmarshal(msg.Data, &temp); err != nil {
-			h.log.Error("failed to unmarshal distance sensor data", "error", err)
+			h.log.Error("failed to unmarshal distance sensor data", slog.Any("error", err), slog.Any("data", msg.Data))
 			return
 		}
 
@@ -159,7 +158,7 @@ func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 			Enabled         uint8  `json:"enabled"`
 		}
 		if err := json.Unmarshal(msg.Data, &temp); err != nil {
-			h.log.Error("failed to unmarshal lift motor data", "error", err)
+			h.log.Error("failed to unmarshal lift motor data", slog.Any("error", err), slog.Any("data", msg.Data))
 			return
 		}
 
@@ -179,7 +178,7 @@ func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 			Enabled   uint8                     `json:"enabled"`
 		}
 		if err := json.Unmarshal(msg.Data, &temp); err != nil {
-			h.log.Error("failed to unmarshal drive motor data", "error", err)
+			h.log.Error("failed to unmarshal drive motor data", slog.Any("error", err), slog.Any("data", msg.Data))
 			return
 		}
 
@@ -192,12 +191,12 @@ func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 		}
 
 	default:
-		h.log.Error("unknown state type", "type", msg.StateType)
+		h.log.Error("unknown state type", slog.Int("type", int(msg.StateType)))
 		return
 	}
 
 	_, err := h.robotService.UpdateRobotState(ctx, params)
 	if err != nil {
-		h.log.Error("failed to update robot state", "error", err)
+		h.log.Error("failed to update robot state", slog.Any("error", err))
 	}
 }
