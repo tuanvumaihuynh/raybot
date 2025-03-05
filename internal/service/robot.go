@@ -7,10 +7,10 @@ import (
 )
 
 type BatteryParams struct {
-	Current      uint
-	Temp         uint
-	Voltage      uint
-	CellVoltages []uint
+	Current      uint16
+	Temp         uint8
+	Voltage      uint16
+	CellVoltages []uint16
 	Percent      uint8
 	Fault        uint8
 	Health       uint8
@@ -18,29 +18,33 @@ type BatteryParams struct {
 }
 
 type ChargeParams struct {
-	CurrentLimit uint
+	CurrentLimit uint16
 	Enabled      bool
 }
 
 type DischargeParams struct {
-	CurrentLimit uint
+	CurrentLimit uint16
 	Enabled      bool
 }
 
 type DistanceSensorParams struct {
-	FrontDistance uint
-	BackDistance  uint
-	DownDistance  uint
+	FrontDistance uint16
+	BackDistance  uint16
+	DownDistance  uint16
 }
 
 type LiftMotorParams struct {
-	Direction model.LiftMotorDirection
-	Speed     uint8
+	CurrentPosition uint16
+	TargetPosition  uint16
+	IsRunning       bool
+	Enabled         bool
 }
 
 type DriveMotorParams struct {
 	Direction model.DriveMotorDirection
 	Speed     uint8
+	IsRunning bool
+	Enabled   bool
 }
 
 type UpdateRobotStateParams struct {
@@ -59,5 +63,6 @@ type UpdateRobotStateParams struct {
 }
 
 type RobotService interface {
+	GetRobotState(ctx context.Context) (model.RobotState, error)
 	UpdateRobotState(ctx context.Context, params UpdateRobotStateParams) (model.RobotState, error)
 }

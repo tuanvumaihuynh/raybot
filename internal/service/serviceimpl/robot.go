@@ -26,6 +26,10 @@ func NewRobotService(
 	}
 }
 
+func (s RobotService) GetRobotState(ctx context.Context) (model.RobotState, error) {
+	return s.robotStateRepo.GetRobotState(ctx)
+}
+
 func (s RobotService) UpdateRobotState(ctx context.Context, params service.UpdateRobotStateParams) (model.RobotState, error) {
 	if err := s.validator.Validate(params); err != nil {
 		return model.RobotState{}, fmt.Errorf("validate params: %w", err)
@@ -77,9 +81,11 @@ func (s RobotService) UpdateRobotState(ctx context.Context, params service.Updat
 
 	if params.SetLiftMotor {
 		state.LiftMotor = model.LiftMotorState{
-			Direction: params.LiftMotor.Direction,
-			Speed:     params.LiftMotor.Speed,
-			UpdatedAt: now,
+			CurrentPosition: params.LiftMotor.CurrentPosition,
+			TargetPosition:  params.LiftMotor.TargetPosition,
+			IsRunning:       params.LiftMotor.IsRunning,
+			Enabled:         params.LiftMotor.Enabled,
+			UpdatedAt:       now,
 		}
 	}
 
@@ -87,6 +93,8 @@ func (s RobotService) UpdateRobotState(ctx context.Context, params service.Updat
 		state.DriveMotor = model.DriveMotorState{
 			Direction: params.DriveMotor.Direction,
 			Speed:     params.DriveMotor.Speed,
+			IsRunning: params.DriveMotor.IsRunning,
+			Enabled:   params.DriveMotor.Enabled,
 			UpdatedAt: now,
 		}
 	}
