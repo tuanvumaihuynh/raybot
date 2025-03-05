@@ -100,7 +100,7 @@ func (s *PICSerialService) routeMessage(ctx context.Context, msg []byte) {
 		Type messageType `json:"type"`
 	}
 	if err := json.Unmarshal(msg, &temp); err != nil {
-		s.log.Error("failed to unmarshal message", "error", err)
+		s.log.Error("failed to unmarshal message", slog.Any("error", err), slog.Any("message", msg))
 		return
 	}
 
@@ -109,7 +109,7 @@ func (s *PICSerialService) routeMessage(ctx context.Context, msg []byte) {
 	case messageTypeSyncState:
 		var syncStateMsg handler.SyncStateMessage
 		if err := json.Unmarshal(msg, &syncStateMsg); err != nil {
-			s.log.Error("failed to unmarshal sync state message", "error", err)
+			s.log.Error("failed to unmarshal sync state message", slog.Any("error", err), slog.Any("message", msg))
 			return
 		}
 		s.handlers.SyncStateHandler.Handle(ctx, syncStateMsg)
