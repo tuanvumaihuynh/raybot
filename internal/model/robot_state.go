@@ -7,10 +7,10 @@ import (
 
 // BatteryState represents the state of the battery
 type BatteryState struct {
-	Current      uint
-	Temp         uint
-	Voltage      uint
-	CellVoltages []uint
+	Current      uint16
+	Temp         uint8
+	Voltage      uint16
+	CellVoltages []uint16
 	Percent      uint8
 	Fault        uint8
 	Health       uint8
@@ -20,47 +20,33 @@ type BatteryState struct {
 
 // ChargeState represents the state of the charge
 type ChargeState struct {
-	CurrentLimit uint
+	CurrentLimit uint16
 	Enabled      bool
 	UpdatedAt    time.Time
 }
 
 // DischargeState represents the state of the discharge
 type DischargeState struct {
-	CurrentLimit uint
+	CurrentLimit uint16
 	Enabled      bool
 	UpdatedAt    time.Time
 }
 
 // DistanceSensorState represents the state of the distance sensors
 type DistanceSensorState struct {
-	FrontDistance uint
-	BackDistance  uint
-	DownDistance  uint
+	FrontDistance uint16
+	BackDistance  uint16
+	DownDistance  uint16
 	UpdatedAt     time.Time
 }
 
-type LiftMotorDirection uint8
-
-func (s LiftMotorDirection) Validate() error {
-	switch s {
-	case LiftMotorDirectionDown, LiftMotorDirectionUp:
-		return nil
-	default:
-		return fmt.Errorf("invalid lift motor direction: %d", s)
-	}
-}
-
-const (
-	LiftMotorDirectionUp LiftMotorDirection = iota
-	LiftMotorDirectionDown
-)
-
 // LiftMotorState represents the state of the lift motor
 type LiftMotorState struct {
-	Direction LiftMotorDirection
-	Speed     uint8
-	UpdatedAt time.Time
+	CurrentPosition uint16
+	TargetPosition  uint16
+	IsRunning       bool
+	Enabled         bool
+	UpdatedAt       time.Time
 }
 
 type DriveMotorDirection uint8
@@ -83,6 +69,8 @@ const (
 type DriveMotorState struct {
 	Direction DriveMotorDirection
 	Speed     uint8
+	IsRunning bool
+	Enabled   bool
 	UpdatedAt time.Time
 }
 
