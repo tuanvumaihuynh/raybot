@@ -26,7 +26,7 @@ Cấu trúc JSON:
 | 0    | Đồng bộ trạng thái từ PIC |
 | 1    | ACK                       |
 
-## 2. Phản hồi đồng bộ trạng thái
+## 2. Phản hồi đồng bộ trạng thái (response_type = 0)
 
 PIC tự động gửi phản hồi đồng bộ trạng thái đến ứng dụng.
 
@@ -69,7 +69,7 @@ Dữ liệu khác nhau cho mỗi loại trạng thái.
 
 Ví dụ phản hồi:
 ```
->{"type":0,"state_type":"0","data":{"current":500,"temp":25,"voltage":12000,"cell_voltages":[4000,4000,4000,4000],"percent":80,"fault":0,"health":0,"status":0}}\r\n
+>{"type":0,"state_type":0,"data":{"current":500,"temp":25,"voltage":12000,"cell_voltages":[4000,4000,4000,4000],"percent":80,"fault":0,"health":0,"status":0}}\r\n
 ```
 
 ### 2.2. Trạng thái sạc
@@ -81,7 +81,7 @@ Ví dụ phản hồi:
 
 Ví dụ phản hồi:
 ```
->{"type":0,"state_type":"1","data":{"current_limit":1000,"enabled":1}}\r\n
+>{"type":0,"state_type":1,"data":{"current_limit":1000,"enabled":1}}\r\n
 ```
 
 ### 2.3. Trạng thái xả
@@ -93,7 +93,7 @@ Ví dụ phản hồi:
 
 Ví dụ phản hồi:
 ```
->{"type":0,"state_type":"2","data":{"current_limit":1000,"enabled":1}}\r\n
+>{"type":0,"state_type":2,"data":{"current_limit":1000,"enabled":1}}\r\n
 ```
 
 ### 2.4. Trạng thái cảm biến khoảng cách
@@ -106,7 +106,7 @@ Ví dụ phản hồi:
 
 Ví dụ phản hồi:
 ```
->{"type":0,"state_type":"3","data":{"front":100,"back":100,"down":100}}\r\n
+>{"type":0,"state_type":3,"data":{"front":100,"back":100,"down":100}}\r\n
 ```
 
 ### 2.5. Trạng thái động cơ nâng
@@ -120,7 +120,7 @@ Ví dụ phản hồi:
 
 Ví dụ phản hồi:
 ```
->{"type":0,"state_type":"4","data":{"current_position":100,"target_position":200,"is_running":1,"enabled":1}}\r\n
+>{"type":0,"state_type":4,"data":{"current_position":100,"target_position":200,"is_running":1,"enabled":1}}\r\n
 ```
 
 ### 2.6. Trạng thái động cơ di chuyển
@@ -135,5 +135,30 @@ Ví dụ phản hồi:
 
 Ví dụ phản hồi:
 ```
->{"type":0,"state_type":"5","data":{"direction":0,"speed":50,"is_running":1,"enabled":1}}\r\n
+>{"type":0,"state_type":5,"data":{"direction":0,"speed":50,"is_running":1,"enabled":1}}\r\n
 ```
+
+## 3. Phản hồi ACK
+
+PIC gửi phản hồi ACK đến ứng dụng khi nhận được lệnh.
+
+Cấu trúc JSON:
+```json
+{
+  "type": 1,
+  "id": <id>,
+  "status": <status>
+}
+```
+
+### id
+
+- ID của lệnh
+- Kiểu dữ liệu: string
+
+### status
+
+| Trường | Kiểu dữ liệu | Mô tả |
+|-------|-----------|----------|
+| 0 | uint8 | Thành công |
+| 1 | uint8 | Lỗi |
