@@ -80,22 +80,26 @@ func TestIntegrationSyncStateHandler_Handle(t *testing.T) {
 			name: "lift motor update",
 			message: SyncStateMessage{
 				StateType: syncStateTypeLiftMotor,
-				Data:      []byte(`{"direction": 0, "speed": 75}`),
+				Data:      []byte(`{"current_position": 100, "target_position": 200, "is_running": 1, "enabled": 1}`),
 			},
 			expected: func(state model.RobotState) bool {
-				return state.LiftMotor.Direction == model.LiftMotorDirectionUp &&
-					state.LiftMotor.Speed == 75
+				return state.LiftMotor.CurrentPosition == 100 &&
+					state.LiftMotor.TargetPosition == 200 &&
+					state.LiftMotor.IsRunning == true &&
+					state.LiftMotor.Enabled == true
 			},
 		},
 		{
 			name: "drive motor update",
 			message: SyncStateMessage{
 				StateType: syncStateTypeDriveMotor,
-				Data:      []byte(`{"direction": 1, "speed": 50}`),
+				Data:      []byte(`{"direction": 1, "speed": 50, "is_running": 1, "enabled": 1}`),
 			},
 			expected: func(state model.RobotState) bool {
 				return state.DriveMotor.Direction == model.DriveMotorDirectionBackward &&
-					state.DriveMotor.Speed == 50
+					state.DriveMotor.Speed == 50 &&
+					state.DriveMotor.IsRunning == true &&
+					state.DriveMotor.Enabled == true
 			},
 		},
 	}

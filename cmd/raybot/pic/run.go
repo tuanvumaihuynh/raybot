@@ -19,17 +19,8 @@ func Start(app *application.Application) error {
 		return fmt.Errorf("failed to run PIC serial service: %w", err)
 	}
 
-	app.Log.Debug("PIC serial service is running")
-
 	app.CleanupManager.Add(func(ctx context.Context) error {
-		app.Log.Debug("PIC serial service is shutting down")
-		if err := cleanup(ctx); err != nil {
-			return fmt.Errorf("failed to cleanup PIC serial service: %w", err)
-		}
-
-		app.Log.Debug("PIC serial service shut down complete")
-
-		return nil
+		return cleanup(ctx)
 	})
 
 	return nil
