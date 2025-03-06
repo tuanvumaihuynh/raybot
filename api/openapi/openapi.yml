@@ -1,0 +1,15 @@
+openapi: 3.0.0
+info:
+  version: 0.1.0
+  title: Raybot API
+  description: >-
+    The Raybot API
+  license:
+    url: https://opensource.org/licenses/MIT
+    name: MIT
+servers:
+  - url: /api/v1
+security: []
+paths:
+  /system/config:
+    $ref: "./paths/system@config.yml"

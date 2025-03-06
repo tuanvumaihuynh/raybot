@@ -1,0 +1,141 @@
+SystemConfigResponse:
+  type: object
+  properties:
+    log:
+      $ref: "#/LogConfig"
+    grpc:
+      $ref: "#/GRPCConfig"
+    http:
+      $ref: "#/HTTPConfig"
+    pic:
+      $ref: "#/PicConfig"
+  required:
+    - log
+    - grpc
+    - http
+    - pic
+
+SystemConfigRequest:
+  type: object
+  properties:
+    log:
+      $ref: "#/LogConfig"
+    grpc:
+      $ref: "#/GRPCConfig"
+    http:
+      $ref: "#/HTTPConfig"
+    pic:
+      $ref: "#/PicConfig"
+  required:
+    - log
+    - grpc
+    - http
+    - pic
+
+GRPCConfig:
+  type: object
+  properties:
+    port:
+      type: integer
+      example: 50051
+      description: The port number for the gRPC server
+      x-order: 1
+  required:
+    - port
+
+HTTPConfig:
+  type: object
+  properties:
+    port:
+      type: integer
+      example: 8080
+      description: The port number for the HTTP server
+      x-order: 1
+    swagger:
+      type: boolean
+      example: true
+      description: Whether to enable the Swagger UI
+      x-order: 2
+  required:
+    - port
+    - swagger
+
+LogConfig:
+  type: object
+  properties:
+    level:
+      type: string
+      enum:
+        - debug
+        - info
+        - warn
+        - error
+      example: "debug"
+      description: The log level for the gRPC server
+      x-order: 1
+      x-go-type: string
+    format:
+      type: string
+      enum:
+        - json
+        - text
+      example: "json"
+      description: The log format for the gRPC server
+      x-order: 2
+      x-go-type: string
+    addSource:
+      type: boolean
+      example: false
+      description: Whether to add the source to the log
+      x-order: 3
+  required:
+    - level
+    - format
+    - addSource
+
+PicConfig:
+  type: object
+  properties:
+    serial:
+      $ref: "#/SerialConfig"
+  required:
+    - serial
+
+SerialConfig:
+  type: object
+  properties:
+    port:
+      type: string
+      example: "/dev/ttyUSB0"
+      description: The port name for the serial connection
+      x-order: 1
+    baudRate:
+      type: integer
+      example: 9600
+      description: The baud rate for the serial connection
+      x-order: 2
+    dataBits:
+      type: integer
+      example: 8
+      description: The data bits for the serial connection
+      x-order: 3
+    stopBits:
+      type: integer
+      example: 1
+      description: The stop bits for the serial connection
+      x-order: 4
+    parity:
+      type: string
+      enum:
+        - none
+        - even
+        - odd
+      example: "none"
+      description: The parity for the serial connection
+      x-order: 5
+  required:
+    - port
+    - baudRate
+    - dataBits
+    - stopBits
+    - parity
