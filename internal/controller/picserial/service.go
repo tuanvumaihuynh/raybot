@@ -3,7 +3,6 @@ package picserial
 import (
 	"context"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"log/slog"
 	"strconv"
@@ -15,11 +14,6 @@ import (
 
 type Config struct {
 	Serial serial.Config `yaml:"serial"`
-}
-
-// RegisterFlags registers flags for the PIC configuration.
-func (cfg *Config) RegisterFlags(f *flag.FlagSet) {
-	cfg.Serial.RegisterFlagsWithPrefix("pic-", f)
 }
 
 // Validate validates the PIC configuration.
@@ -63,7 +57,7 @@ func NewPICSerialService(cfg Config, service service.Service) (*PICSerialService
 
 // Run runs the PIC serial service.
 func (s *PICSerialService) Run(ctx context.Context) (CleanupFunc, error) {
-	s.log.Debug("PIC serial service is running")
+	s.log.Info("PIC serial service is running")
 
 	go s.readLoop(ctx)
 

@@ -5,31 +5,37 @@ import (
 	"time"
 
 	"github.com/tbe-team/raybot/internal/controller/grpc"
+	"github.com/tbe-team/raybot/internal/controller/http"
 	"github.com/tbe-team/raybot/internal/controller/picserial"
 	"github.com/tbe-team/raybot/internal/controller/picserial/serial"
 	"github.com/tbe-team/raybot/pkg/log"
 )
 
 type Config struct {
-	PIC  picserial.Config `yaml:"pic"`
-	GRPC grpc.Config      `yaml:"grpc"`
 	Log  log.Config       `yaml:"log"`
+	GRPC grpc.Config      `yaml:"grpc"`
+	HTTP http.Config      `yaml:"http"`
+	PIC  picserial.Config `yaml:"pic"`
 
 	ConfigPath string `yaml:"-"`
 }
 
 // Validate validates the application configuration.
 func (cfg *Config) Validate() error {
-	if err := cfg.PIC.Validate(); err != nil {
-		return fmt.Errorf("validate PIC: %w", err)
+	if err := cfg.Log.Validate(); err != nil {
+		return fmt.Errorf("validate log: %w", err)
 	}
 
 	if err := cfg.GRPC.Validate(); err != nil {
 		return fmt.Errorf("validate GRPC: %w", err)
 	}
 
-	if err := cfg.Log.Validate(); err != nil {
-		return fmt.Errorf("validate log: %w", err)
+	if err := cfg.HTTP.Validate(); err != nil {
+		return fmt.Errorf("validate HTTP: %w", err)
+	}
+
+	if err := cfg.PIC.Validate(); err != nil {
+		return fmt.Errorf("validate PIC: %w", err)
 	}
 
 	return nil
@@ -49,6 +55,9 @@ var DefaultConfig = Config{
 	},
 	GRPC: grpc.Config{
 		Port: 50051,
+	},
+	HTTP: http.Config{
+		Port: 8080,
 	},
 	Log: log.Config{
 		Level:     "info",

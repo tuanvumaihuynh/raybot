@@ -70,11 +70,19 @@ func NewClient(cfg Config) (Client, error) {
 	var port serial.Port
 	var openErr error
 
-	slog.Info("opening serial port", slog.String("port", cfg.Port))
 	port, openErr = serial.Open(cfg.Port, mode)
 	if openErr != nil {
 		// Now we just ignore the error
-		slog.Error("failed to open serial port", slog.Any("error", openErr))
+		slog.Error("failed to open serial port",
+			slog.Group("serial_port",
+				slog.String("port", cfg.Port),
+				slog.Int("baud_rate", cfg.BaudRate),
+				slog.Int("data_bits", cfg.DataBits),
+				slog.String("parity", cfg.Parity),
+				slog.Float64("stop_bits", cfg.StopBits),
+			),
+			slog.Any("error", openErr),
+		)
 		// return nil, err
 	}
 
