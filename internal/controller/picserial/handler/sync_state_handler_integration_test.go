@@ -1,4 +1,4 @@
-package handler
+package handler_test
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/tbe-team/raybot/internal/controller/picserial/handler"
 	"github.com/tbe-team/raybot/internal/model"
 	"github.com/tbe-team/raybot/internal/repository/repoimpl"
 	"github.com/tbe-team/raybot/internal/service/serviceimpl"
@@ -22,13 +23,13 @@ func TestIntegrationSyncStateHandler_Handle(t *testing.T) {
 
 	tests := []struct {
 		name     string
-		message  SyncStateMessage
+		message  handler.SyncStateMessage
 		expected func(state model.RobotState) bool
 	}{
 		{
 			name: "battery update",
-			message: SyncStateMessage{
-				StateType: syncStateTypeBattery,
+			message: handler.SyncStateMessage{
+				StateType: handler.SyncStateTypeBattery,
 				Data:      []byte(`{"current": 500, "temp": 25, "voltage": 12000, "cell_voltages": [4000, 4000, 4000], "percent": 100, "fault": 0, "health": 100, "status": 1}`),
 			},
 			expected: func(state model.RobotState) bool {
@@ -44,8 +45,8 @@ func TestIntegrationSyncStateHandler_Handle(t *testing.T) {
 		},
 		{
 			name: "charge update",
-			message: SyncStateMessage{
-				StateType: syncStateTypeCharge,
+			message: handler.SyncStateMessage{
+				StateType: handler.SyncStateTypeCharge,
 				Data:      []byte(`{"current_limit": 1000, "enabled": 1}`),
 			},
 			expected: func(state model.RobotState) bool {
@@ -55,8 +56,8 @@ func TestIntegrationSyncStateHandler_Handle(t *testing.T) {
 		},
 		{
 			name: "discharge update",
-			message: SyncStateMessage{
-				StateType: syncStateTypeDischarge,
+			message: handler.SyncStateMessage{
+				StateType: handler.SyncStateTypeDischarge,
 				Data:      []byte(`{"current_limit": 2000, "enabled": 0}`),
 			},
 			expected: func(state model.RobotState) bool {
@@ -66,8 +67,8 @@ func TestIntegrationSyncStateHandler_Handle(t *testing.T) {
 		},
 		{
 			name: "distance sensor update",
-			message: SyncStateMessage{
-				StateType: syncStateTypeDistanceSensor,
+			message: handler.SyncStateMessage{
+				StateType: handler.SyncStateTypeDistanceSensor,
 				Data:      []byte(`{"front_distance": 100, "back_distance": 200, "down_distance": 50}`),
 			},
 			expected: func(state model.RobotState) bool {
@@ -78,8 +79,8 @@ func TestIntegrationSyncStateHandler_Handle(t *testing.T) {
 		},
 		{
 			name: "lift motor update",
-			message: SyncStateMessage{
-				StateType: syncStateTypeLiftMotor,
+			message: handler.SyncStateMessage{
+				StateType: handler.SyncStateTypeLiftMotor,
 				Data:      []byte(`{"current_position": 100, "target_position": 200, "is_running": 1, "enabled": 1}`),
 			},
 			expected: func(state model.RobotState) bool {
@@ -91,8 +92,8 @@ func TestIntegrationSyncStateHandler_Handle(t *testing.T) {
 		},
 		{
 			name: "drive motor update",
-			message: SyncStateMessage{
-				StateType: syncStateTypeDriveMotor,
+			message: handler.SyncStateMessage{
+				StateType: handler.SyncStateTypeDriveMotor,
 				Data:      []byte(`{"direction": 1, "speed": 50, "is_running": 1, "enabled": 1}`),
 			},
 			expected: func(state model.RobotState) bool {
@@ -108,7 +109,7 @@ func TestIntegrationSyncStateHandler_Handle(t *testing.T) {
 		t.Run(tt.name, func(_ *testing.T) {
 			robotStateRepo := repoimpl.NewRobotStateRepository()
 			robotService := serviceimpl.NewRobotService(robotStateRepo, validator)
-			handler := NewSyncStateHandler(robotService)
+			handler := handler.NewSyncStateHandler(robotService)
 
 			handler.Handle(ctx, tt.message)
 
@@ -119,5 +120,4 @@ func TestIntegrationSyncStateHandler_Handle(t *testing.T) {
 			assert.True(t, tt.expected(state))
 		})
 	}
-
 }

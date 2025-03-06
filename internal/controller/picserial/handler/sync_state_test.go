@@ -1,8 +1,10 @@
-package handler
+package handler_test
 
 import (
 	"encoding/json"
 	"testing"
+
+	"github.com/tbe-team/raybot/internal/controller/picserial/handler"
 )
 
 func TestUnmarshalSyncStateType(t *testing.T) {
@@ -10,43 +12,43 @@ func TestUnmarshalSyncStateType(t *testing.T) {
 		name      string
 		msg       []byte
 		shouldErr bool
-		want      syncStateType
+		want      handler.SyncStateType
 	}{
 		{
 			name:      "sync state type battery",
 			msg:       []byte(`{"state_type": 0}`),
 			shouldErr: false,
-			want:      syncStateTypeBattery,
+			want:      handler.SyncStateTypeBattery,
 		},
 		{
 			name:      "sync state type charge",
 			msg:       []byte(`{"state_type": 1}`),
 			shouldErr: false,
-			want:      syncStateTypeCharge,
+			want:      handler.SyncStateTypeCharge,
 		},
 		{
 			name:      "sync state type discharge",
 			msg:       []byte(`{"state_type": 2}`),
 			shouldErr: false,
-			want:      syncStateTypeDischarge,
+			want:      handler.SyncStateTypeDischarge,
 		},
 		{
 			name:      "sync state type distance sensor",
 			msg:       []byte(`{"state_type": 3}`),
 			shouldErr: false,
-			want:      syncStateTypeDistanceSensor,
+			want:      handler.SyncStateTypeDistanceSensor,
 		},
 		{
 			name:      "sync state type lift motor",
 			msg:       []byte(`{"state_type": 4}`),
 			shouldErr: false,
-			want:      syncStateTypeLiftMotor,
+			want:      handler.SyncStateTypeLiftMotor,
 		},
 		{
 			name:      "sync state type drive motor",
 			msg:       []byte(`{"state_type": 5}`),
 			shouldErr: false,
-			want:      syncStateTypeDriveMotor,
+			want:      handler.SyncStateTypeDriveMotor,
 		},
 		{
 			name:      "invalid sync state type",
@@ -58,7 +60,7 @@ func TestUnmarshalSyncStateType(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var temp struct {
-				StateType syncStateType `json:"state_type"`
+				StateType handler.SyncStateType `json:"state_type"`
 			}
 			err := json.Unmarshal(tt.msg, &temp)
 			if tt.shouldErr {
