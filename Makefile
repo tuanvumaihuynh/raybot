@@ -1,6 +1,15 @@
 ########################
 # Code generation
 ########################
+.PHONY: gen-openapi
+gen-openapi:
+	set -eux
+
+	npx --yes @redocly/cli bundle ./api/openapi/openapi.yml --output bin/oas/openapi.yml --ext yml
+	go run github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@v2.4.1 \
+		-config internal/controller/http/oas/gen/oapi-codegen.yml \
+		bin/oas/openapi.yml
+
 .PHONY: gen-mock
 gen-mock:
 	go run github.com/vektra/mockery/v2@v2.50 --config .mockery.yml

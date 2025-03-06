@@ -120,10 +120,12 @@ SerialConfig:
       description: The data bits for the serial connection
       x-order: 3
     stopBits:
-      type: integer
+      type: number
+      format: double
       example: 1
       description: The stop bits for the serial connection
       x-order: 4
+      x-go-type: float64
     parity:
       type: string
       enum:
@@ -133,9 +135,18 @@ SerialConfig:
       example: "none"
       description: The parity for the serial connection
       x-order: 5
+      x-go-type: string
+    readTimeout:
+      type: number
+      format: double
+      example: 1
+      description: The read timeout for the serial connection
+      x-order: 6
+      x-go-type: float64
   required:
     - port
     - baudRate
     - dataBits
     - stopBits
     - parity
+    - readTimeout
