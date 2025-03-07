@@ -62,9 +62,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
     </div>
 
     <div class="mt-12 text-center">
-      <RouterLink to="/about">
+      <RouterLink to="/home">
         <Button size="lg">
-          Learn More About Us
+          Go to Home
         </Button>
       </RouterLink>
     </div>
