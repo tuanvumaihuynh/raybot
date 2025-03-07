@@ -2,7 +2,6 @@ package grpc
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"log/slog"
 	"net"
@@ -23,12 +22,8 @@ type Config struct {
 	Port int `yaml:"port"`
 }
 
-func (c *Config) RegisterFlags(f *flag.FlagSet) {
-	f.IntVar(&c.Port, "grpc-port", 50051, "gRPC port")
-}
-
 func (c *Config) Validate() error {
-	if c.Port < 0 || c.Port > 65535 {
+	if c.Port <= 0 || c.Port > 65535 {
 		return fmt.Errorf("invalid port: %d", c.Port)
 	}
 	return nil
@@ -82,7 +77,7 @@ func (s GRPCService) Run() (CleanupFunc, error) {
 	}
 
 	go func() {
-		s.log.Debug(fmt.Sprintf("GRPC server is listening on port %d", s.cfg.Port))
+		s.log.Info(fmt.Sprintf("GRPC server is listening on port %d", s.cfg.Port))
 		if err := server.Serve(lis); err != nil {
 			s.log.Error("failed to serve GRPC", "error", err)
 		}

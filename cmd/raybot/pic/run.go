@@ -1,7 +1,6 @@
 package pic
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/tbe-team/raybot/internal/application"
@@ -9,7 +8,7 @@ import (
 )
 
 func Start(app *application.Application) error {
-	picSerialService, err := picserial.NewPICSerialService(app.Cfg.PIC, app.Service)
+	picSerialService, err := picserial.NewPICSerialService(app.CfgManager.GetConfig().PIC, app.Service)
 	if err != nil {
 		return fmt.Errorf("failed to create PIC serial service: %w", err)
 	}
@@ -19,9 +18,7 @@ func Start(app *application.Application) error {
 		return fmt.Errorf("failed to run PIC serial service: %w", err)
 	}
 
-	app.CleanupManager.Add(func(ctx context.Context) error {
-		return cleanup(ctx)
-	})
+	app.CleanupManager.Add(cleanup)
 
 	return nil
 }

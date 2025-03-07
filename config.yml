@@ -1,7 +1,12 @@
 log:
   level: debug
   format: json
-
+  add_source: false
+grpc:
+  port: 50051
+http:
+  port: 8080
+  enable_swagger: true
 pic:
   serial:
     port: /dev/ttyUSB0
@@ -9,3 +14,4 @@ pic:
     data_bits: 8
     stop_bits: 1
     parity: none
+    read_timeout: 1s

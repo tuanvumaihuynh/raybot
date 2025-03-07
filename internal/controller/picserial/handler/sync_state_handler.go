@@ -11,11 +11,11 @@ import (
 	"github.com/tbe-team/raybot/internal/service"
 )
 
-// syncStateType is the type of sync state received from the PIC
-type syncStateType uint8
+// SyncStateType is the type of sync state received from the PIC
+type SyncStateType uint8
 
 // UnmarshalJSON implements the json.Unmarshaler interface.
-func (s *syncStateType) UnmarshalJSON(data []byte) error {
+func (s *SyncStateType) UnmarshalJSON(data []byte) error {
 	n, err := strconv.ParseUint(string(data), 10, 8)
 	if err != nil {
 		return fmt.Errorf("parse uint8: %w", err)
@@ -23,17 +23,17 @@ func (s *syncStateType) UnmarshalJSON(data []byte) error {
 
 	switch n {
 	case 0:
-		*s = syncStateTypeBattery
+		*s = SyncStateTypeBattery
 	case 1:
-		*s = syncStateTypeCharge
+		*s = SyncStateTypeCharge
 	case 2:
-		*s = syncStateTypeDischarge
+		*s = SyncStateTypeDischarge
 	case 3:
-		*s = syncStateTypeDistanceSensor
+		*s = SyncStateTypeDistanceSensor
 	case 4:
-		*s = syncStateTypeLiftMotor
+		*s = SyncStateTypeLiftMotor
 	case 5:
-		*s = syncStateTypeDriveMotor
+		*s = SyncStateTypeDriveMotor
 	default:
 		return fmt.Errorf("invalid sync state type: %s", string(data))
 	}
@@ -41,16 +41,16 @@ func (s *syncStateType) UnmarshalJSON(data []byte) error {
 }
 
 const (
-	syncStateTypeBattery syncStateType = iota
-	syncStateTypeCharge
-	syncStateTypeDischarge
-	syncStateTypeDistanceSensor
-	syncStateTypeLiftMotor
-	syncStateTypeDriveMotor
+	SyncStateTypeBattery SyncStateType = iota
+	SyncStateTypeCharge
+	SyncStateTypeDischarge
+	SyncStateTypeDistanceSensor
+	SyncStateTypeLiftMotor
+	SyncStateTypeDriveMotor
 )
 
 type SyncStateMessage struct {
-	StateType syncStateType   `json:"state_type"`
+	StateType SyncStateType   `json:"state_type"`
 	Data      json.RawMessage `json:"data"`
 }
 
@@ -72,7 +72,7 @@ func NewSyncStateHandler(robotService service.RobotService) *SyncStateHandler {
 func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 	params := service.UpdateRobotStateParams{}
 	switch msg.StateType {
-	case syncStateTypeBattery:
+	case SyncStateTypeBattery:
 		var temp struct {
 			Current      uint16   `json:"current"`
 			Temp         uint8    `json:"temp"`
@@ -100,7 +100,7 @@ func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 			Status:       temp.Status,
 		}
 
-	case syncStateTypeCharge:
+	case SyncStateTypeCharge:
 		var temp struct {
 			CurrentLimit uint16 `json:"current_limit"`
 			Enabled      uint8  `json:"enabled"`
@@ -116,7 +116,7 @@ func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 			Enabled:      temp.Enabled == 1,
 		}
 
-	case syncStateTypeDischarge:
+	case SyncStateTypeDischarge:
 		var temp struct {
 			CurrentLimit uint16 `json:"current_limit"`
 			Enabled      uint8  `json:"enabled"`
@@ -132,7 +132,7 @@ func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 			Enabled:      temp.Enabled == 1,
 		}
 
-	case syncStateTypeDistanceSensor:
+	case SyncStateTypeDistanceSensor:
 		var temp struct {
 			FrontDistance uint16 `json:"front_distance"`
 			BackDistance  uint16 `json:"back_distance"`
@@ -150,7 +150,7 @@ func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 			DownDistance:  temp.DownDistance,
 		}
 
-	case syncStateTypeLiftMotor:
+	case SyncStateTypeLiftMotor:
 		var temp struct {
 			CurrentPosition uint16 `json:"current_position"`
 			TargetPosition  uint16 `json:"target_position"`
@@ -170,7 +170,7 @@ func (h *SyncStateHandler) Handle(ctx context.Context, msg SyncStateMessage) {
 			Enabled:         temp.Enabled == 1,
 		}
 
-	case syncStateTypeDriveMotor:
+	case SyncStateTypeDriveMotor:
 		var temp struct {
 			Direction model.DriveMotorDirection `json:"direction"`
 			Speed     uint8                     `json:"speed"`

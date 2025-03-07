@@ -1,7 +1,6 @@
 package serial
 
 import (
-	"flag"
 	"fmt"
 	"time"
 )
@@ -25,16 +24,6 @@ type Config struct {
 
 	// ReadTimeout is the timeout for read operations
 	ReadTimeout time.Duration `yaml:"read_timeout"`
-}
-
-// RegisterFlagsWithPrefix registers flags with a prefix for the PIC serial port configuration.
-func (cfg *Config) RegisterFlagsWithPrefix(prefix string, f *flag.FlagSet) {
-	f.StringVar(&cfg.Port, prefix+"serial-port", "/dev/ttyUSB0", "PIC board serial port")
-	f.IntVar(&cfg.BaudRate, prefix+"serial-baud-rate", 9600, "PIC board serial baud rate")
-	f.IntVar(&cfg.DataBits, prefix+"serial-data-bits", 8, "PIC board serial data bits (8, 7, 6, 5)")
-	f.Float64Var(&cfg.StopBits, prefix+"serial-stop-bits", 1, "PIC board serial stop bits (1, 1.5, 2)")
-	f.StringVar(&cfg.Parity, prefix+"serial-parity", "none", "PIC board serial parity (none, odd, even)")
-	f.DurationVar(&cfg.ReadTimeout, prefix+"serial-read-timeout", 1*time.Second, "PIC board serial read timeout")
 }
 
 // Validate verifies the configuration for the PIC serial port.

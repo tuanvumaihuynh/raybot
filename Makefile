@@ -1,9 +1,21 @@
 ########################
 # Code generation
 ########################
+.PHONY: gen-openapi
+gen-openapi:
+	set -eux
+
+	npx --yes @redocly/cli bundle ./api/openapi/openapi.yml --output api/openapi/gen/openapi.yml --ext yml
+	go run github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@v2.4.1 \
+		-config internal/controller/http/oas/gen/oapi-codegen.yml \
+		api/openapi/gen/openapi.yml
+
 .PHONY: gen-mock
 gen-mock:
-	go run github.com/vektra/mockery/v2@v2.50 --config .mockery.yml
+	go run github.com/vektra/mockery/v2@v2.53 --config .mockery.yml
+
+.PHONY: gen-all
+gen-all: gen-openapi gen-mock
 
 #########################
 # Build
@@ -21,7 +33,7 @@ build-arm64:
 #########################
 .PHONY: run
 run:
-	go run cmd/raybot/main.go raybot-config.yml
+	go run cmd/raybot/main.go
 
 #########################
 # Testing
