@@ -1,0 +1,241 @@
+openapi: 3.0.0
+info:
+  version: 0.1.0
+  title: Raybot API
+  description: The Raybot API
+  license:
+    url: https://opensource.org/licenses/MIT
+    name: MIT
+servers:
+  - url: /api/v1
+security: []
+paths:
+  /system/config:
+    get:
+      summary: Get system configuration
+      operationId: getSystemConfig
+      description: Get the system configuration
+      tags:
+        - system
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfigResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: Update system configuration
+      operationId: updateSystemConfig
+      description: Update the system configuration
+      tags:
+        - system
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemConfigRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfigResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    LogConfig:
+      type: object
+      properties:
+        level:
+          type: string
+          enum:
+            - debug
+            - info
+            - warn
+            - error
+          example: debug
+          description: The log level for the gRPC server
+          x-order: 1
+          x-go-type: string
+        format:
+          type: string
+          enum:
+            - json
+            - text
+          example: json
+          description: The log format for the gRPC server
+          x-order: 2
+          x-go-type: string
+        addSource:
+          type: boolean
+          example: false
+          description: Whether to add the source to the log
+          x-order: 3
+      required:
+        - level
+        - format
+        - addSource
+    GRPCConfig:
+      type: object
+      properties:
+        port:
+          type: integer
+          example: 50051
+          description: The port number for the gRPC server
+          x-order: 1
+      required:
+        - port
+    HTTPConfig:
+      type: object
+      properties:
+        port:
+          type: integer
+          example: 8080
+          description: The port number for the HTTP server
+          x-order: 1
+        enableSwagger:
+          type: boolean
+          example: true
+          description: Whether to enable the Swagger UI
+          x-order: 2
+      required:
+        - port
+        - enableSwagger
+    SerialConfig:
+      type: object
+      properties:
+        port:
+          type: string
+          example: /dev/ttyUSB0
+          description: The port name for the serial connection
+          x-order: 1
+        baudRate:
+          type: integer
+          example: 9600
+          description: The baud rate for the serial connection
+          x-order: 2
+        dataBits:
+          type: integer
+          example: 8
+          description: The data bits for the serial connection
+          x-order: 3
+        stopBits:
+          type: number
+          format: double
+          example: 1
+          description: The stop bits for the serial connection
+          x-order: 4
+          x-go-type: float64
+        parity:
+          type: string
+          enum:
+            - none
+            - even
+            - odd
+          example: none
+          description: The parity for the serial connection
+          x-order: 5
+          x-go-type: string
+        readTimeout:
+          type: number
+          format: double
+          example: 1
+          description: The read timeout for the serial connection
+          x-order: 6
+          x-go-type: float64
+      required:
+        - port
+        - baudRate
+        - dataBits
+        - stopBits
+        - parity
+        - readTimeout
+    PicConfig:
+      type: object
+      properties:
+        serial:
+          $ref: '#/components/schemas/SerialConfig'
+      required:
+        - serial
+    SystemConfigResponse:
+      type: object
+      properties:
+        log:
+          $ref: '#/components/schemas/LogConfig'
+        grpc:
+          $ref: '#/components/schemas/GRPCConfig'
+        http:
+          $ref: '#/components/schemas/HTTPConfig'
+        pic:
+          $ref: '#/components/schemas/PicConfig'
+      required:
+        - log
+        - grpc
+        - http
+        - pic
+    FieldError:
+      type: object
+      properties:
+        field:
+          type: string
+          description: field name
+          example: name
+          x-order: 1
+        message:
+          type: string
+          description: error message
+          example: Name is required
+          x-order: 2
+      required:
+        - field
+        - message
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: custom raybot error code
+          example: item.NotFound
+          x-order: 1
+        message:
+          type: string
+          description: custom raybot error message
+          example: Item not found
+          x-order: 2
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldError'
+          x-order: 3
+      required:
+        - code
+        - message
+    SystemConfigRequest:
+      type: object
+      properties:
+        log:
+          $ref: '#/components/schemas/LogConfig'
+        grpc:
+          $ref: '#/components/schemas/GRPCConfig'
+        http:
+          $ref: '#/components/schemas/HTTPConfig'
+        pic:
+          $ref: '#/components/schemas/PicConfig'
+      required:
+        - log
+        - grpc
+        - http
+        - pic

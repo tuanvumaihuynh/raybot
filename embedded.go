@@ -4,5 +4,5 @@ import (
 	_ "embed"
 )
 
-//go:embed bin/oas/openapi.yml
+//go:embed api/openapi/gen/openapi.yml
 var OpenapiSpec []byte
