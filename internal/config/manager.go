@@ -43,7 +43,7 @@ func NewManager() (*Manager, error) {
 
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
 		s.log.Info("Config file not found, creating it", slog.String("configPath", configPath))
-		if err := os.MkdirAll(installPath, 0755); err != nil {
+		if err := initDirs(installPath); err != nil {
 			return nil, fmt.Errorf("create config directory: %w", err)
 		}
 
@@ -116,23 +116,4 @@ func (s *Manager) SaveConfig() error {
 	}
 
 	return nil
-}
-
-// detectInstallPath detects the install path of the application.
-// If the application is installed in /usr/bin or /usr/local/bin,
-// the config file is stored in the home directory.
-// Otherwise, the config file is stored in the current directory.
-func detectInstallPath() string {
-	if path, err := os.Executable(); err == nil {
-		dir := filepath.Dir(path)
-		if dir == "/usr/bin" || dir == "/usr/local/bin" {
-			home, err := os.UserHomeDir()
-			if err != nil {
-				return "./"
-			}
-			return filepath.Join(home, ".raybot/")
-		}
-	}
-
-	return "./"
 }
