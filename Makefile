@@ -12,7 +12,10 @@ gen-openapi:
 
 .PHONY: gen-mock
 gen-mock:
-	go run github.com/vektra/mockery/v2@v2.50 --config .mockery.yml
+	go run github.com/vektra/mockery/v2@v2.53 --config .mockery.yml
+
+.PHONY: gen-all
+gen-all: gen-openapi gen-mock
 
 #########################
 # Build
