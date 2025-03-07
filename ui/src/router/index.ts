@@ -3,30 +3,32 @@ import { useNProgress } from '@/lib/nprogress'
 import { createRouter, createWebHistory } from 'vue-router'
 import 'nprogress/nprogress.css'
 
+const MainLayout = () => import('@/layouts/main-layout/MainLayout.vue')
+
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: 'landing',
-    component: () => import('@/views/Landing.vue'),
-    meta: {
-      title: 'Welcome',
-    },
+    redirect: '/home',
   },
   {
     path: '/home',
-    name: 'home',
-    component: () => import('@/views/Home.vue'),
-    meta: {
-      title: 'Home',
-    },
+    component: MainLayout,
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/Home.vue'),
+      },
+    ],
   },
   {
-    path: '/about',
-    name: 'about',
-    component: () => import('@/views/About.vue'),
-    meta: {
-      title: 'About Us',
-    },
+    path: '/system',
+    component: MainLayout,
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/System.vue'),
+      },
+    ],
   },
 ]
 
